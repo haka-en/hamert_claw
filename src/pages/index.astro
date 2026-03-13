@@ -1,0 +1,61 @@
+---
+import { getCollection } from "astro:content";
+import "../styles/global.css";
+
+const posts = (await getCollection("posts")).sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime()
+);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Knowledge Site</title>
+    <meta
+      name="description"
+      content="A minimal Astro knowledge base for AI-generated explainers, research notes, and interactive posts."
+    />
+  </head>
+  <body>
+    <main class="site-shell">
+      <section class="hero">
+        <span class="tag">Static Astro knowledge base</span>
+        <h1>Research notes and explainers, published by commit.</h1>
+        <p>
+          Minimal infrastructure for AI-generated long-form content. Posts are MDX files, routes are automatic,
+          and React islands are available when a concept benefits from interaction.
+        </p>
+      </section>
+
+      <section class="post-list" aria-label="Posts">
+        {posts.map((post) => (
+          <a class="post-card" href={`/${post.id}`}>
+            <h2>{post.data.title}</h2>
+            <p>{post.data.description}</p>
+            <div class="meta-row">
+              <span>
+                {post.data.date.toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "short",
+                  day: "numeric"
+                })}
+              </span>
+              <span class="type-badge" data-type={post.data.type}>
+                {post.data.type}
+              </span>
+            </div>
+            {post.data.tags && post.data.tags.length > 0 && (
+              <div class="tag-list">
+                {post.data.tags.map((tag) => (
+                  <span class="tag">{tag}</span>
+                ))}
+              </div>
+            )}
+          </a>
+        ))}
+      </section>
+    </main>
+  </body>
+</html>

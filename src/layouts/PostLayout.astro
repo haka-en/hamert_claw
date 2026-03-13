@@ -1,0 +1,53 @@
+---
+import "../styles/global.css";
+
+interface Props {
+  title: string;
+  description: string;
+  date: Date;
+  tags?: string[];
+  type: "explainer" | "research" | "interactive";
+}
+
+const { title, description, date, tags = [], type } = Astro.props;
+
+const formattedDate = date.toLocaleDateString("en-US", {
+  year: "numeric",
+  month: "long",
+  day: "numeric"
+});
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+  </head>
+  <body>
+    <main class="post-page">
+      <a class="post-back" href="/">← All posts</a>
+      <header class="post-header">
+        <div class="meta-row">
+          <span>{formattedDate}</span>
+          <span class="type-badge" data-type={type}>{type}</span>
+        </div>
+        <h1>{title}</h1>
+        <p>{description}</p>
+        {tags.length > 0 && (
+          <div class="tag-list" aria-label="Tags">
+            {tags.map((tag) => (
+              <span class="tag">{tag}</span>
+            ))}
+          </div>
+        )}
+      </header>
+
+      <article class="prose">
+        <slot />
+      </article>
+    </main>
+  </body>
+</html>

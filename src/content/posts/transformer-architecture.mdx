@@ -1,0 +1,115 @@
+---
+title: "Transformer Architecture"
+description: "A long-form overview of the transformer stack, from token embeddings to residual pathways and scaling behavior."
+date: 2026-03-12
+tags:
+  - transformers
+  - architecture
+  - research
+type: "research"
+---
+
+# Overview
+
+Transformers replaced recurrence with repeated applications of attention and position-wise feed-forward networks. The architecture is now the standard foundation for language models, multimodal systems, retrieval pipelines, and many inference-time tool-using agents.
+
+## Tokenization and embeddings
+
+The first stage maps discrete tokens into dense vectors. If the vocabulary size is $V$ and the model width is $d_{\text{model}}$, then the embedding matrix is:
+
+$$
+E \in \mathbb{R}^{V \times d_{\text{model}}}
+$$
+
+Each input token index $t_i$ is converted into an embedding vector $x_i = E[t_i]$. Because self-attention alone is permutation-invariant, positional information must also be injected. A common formulation is:
+
+$$
+h_i^{(0)} = x_i + p_i
+$$
+
+where $p_i$ is a positional encoding or a learned positional embedding.
+
+## Self-attention block
+
+Within a layer $\ell$, the hidden state matrix $H^{(\ell)}$ is projected into query, key, and value matrices:
+
+$$
+Q = H^{(\ell)}W_Q, \qquad K = H^{(\ell)}W_K, \qquad V = H^{(\ell)}W_V
+$$
+
+Scaled dot-product attention is then computed as:
+
+$$
+\mathrm{Attn}(Q, K, V) = \mathrm{softmax}\left(\frac{QK^\top + M}{\sqrt{d_k}}\right)V
+$$
+
+The mask $M$ is used to suppress invalid positions. In causal language models, $M$ prevents each token from attending to future tokens.
+
+## Multi-head attention
+
+Instead of using one attention map, the transformer learns multiple heads:
+
+$$
+\mathrm{MHA}(H) = \mathrm{Concat}(\text{head}_1, \ldots, \text{head}_h)W_O
+$$
+
+where each head is:
+
+$$
+\text{head}_j = \mathrm{Attn}(HW_Q^{(j)}, HW_K^{(j)}, HW_V^{(j)})
+$$
+
+This allows the model to express different relational patterns in parallel. One head may specialize in syntax, another in positional locality, and another in long-range entity tracking.
+
+## Feed-forward sublayer
+
+After attention, each position passes through the same MLP independently:
+
+$$
+\mathrm{FFN}(x) = W_2 \sigma(W_1 x + b_1) + b_2
+$$
+
+Modern transformers often replace a plain activation with gated variants such as SwiGLU:
+
+$$
+\mathrm{SwiGLU}(x) = (xW_a) \odot \mathrm{swish}(xW_b)
+$$
+
+This increases expressivity without changing the core sequence structure.
+
+## Residual stream and normalization
+
+The transformer is easier to optimize when each sublayer is wrapped by residual connections. A common pre-norm block is:
+
+$$
+\tilde{H}^{(\ell)} = H^{(\ell)} + \mathrm{MHA}(\mathrm{LN}(H^{(\ell)}))
+$$
+
+$$
+H^{(\ell + 1)} = \tilde{H}^{(\ell)} + \mathrm{FFN}(\mathrm{LN}(\tilde{H}^{(\ell)}))
+$$
+
+The residual stream acts as a persistent communication channel across the depth of the network. Layer normalization stabilizes statistics and improves optimization.
+
+## Scaling properties
+
+A transformer layer primarily spends computation in attention and MLP blocks. For sequence length $n$, width $d$, and head dimension $d_k$, the attention score matrix alone scales as:
+
+$$
+\mathcal{O}(n^2 d_k)
+$$
+
+That quadratic term is why long-context inference remains expensive. Many later architectures explore sparse attention, chunking, state-space models, or retrieval augmentation to reduce that bottleneck.
+
+## Why the architecture persists
+
+Transformers remain dominant because they combine a simple repeated block with massive parallelism and strong transfer behavior. The architecture also composes well with instruction tuning, tool use, retrieval, and multimodal token streams.
+
+In practice, most frontier variations still preserve the same backbone:
+
+- token embeddings plus positional structure
+- repeated attention and MLP layers
+- residual pathways and normalization
+- a final projection into vocabulary logits
+
+That design has proven flexible enough to absorb many downstream improvements without abandoning the core transformer stack.

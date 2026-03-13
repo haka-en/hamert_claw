@@ -1,0 +1,48 @@
+---
+title: "Attention Mechanism"
+description: "A compact explainer on how queries, keys, and values let a model focus on the right context."
+date: 2026-03-10
+tags:
+  - transformers
+  - attention
+  - mdx
+type: "interactive"
+---
+
+import InteractiveDemo from "../../components/InteractiveDemo.jsx";
+
+Attention turns a sequence into a set of weighted context lookups. Instead of compressing everything into a single hidden state, the model computes how strongly each token should influence the current token.
+
+<InteractiveDemo concept="Scaled dot-product attention" client:load />
+
+## Core idea
+
+Each token is projected into three spaces:
+
+- Query vectors decide what information the model is asking for.
+- Key vectors describe what information each token offers.
+- Value vectors carry the content that will be blended together.
+
+The standard attention rule is:
+
+$$
+\mathrm{Attention}(Q, K, V) = \mathrm{softmax}\left(\frac{QK^\top}{\sqrt{d_k}}\right)V
+$$
+
+The scaling term $\sqrt{d_k}$ prevents the dot products from growing too large as dimensionality increases. Without that factor, the softmax can become overly sharp and harder to optimize.
+
+## Intuition
+
+When a query aligns strongly with a key, the resulting weight becomes larger after softmax normalization. The output is then a weighted sum of values, which means the model can dynamically route information from the most relevant tokens.
+
+```python
+import numpy as np
+
+def scaled_dot_product_attention(q, k, v):
+    depth = q.shape[-1]
+    scores = q @ k.T / np.sqrt(depth)
+    weights = np.exp(scores) / np.exp(scores).sum(axis=-1, keepdims=True)
+    return weights @ v, weights
+```
+
+This mechanism is simple, parallelizable, and expressive enough to support long-range dependencies. That is why it became the central primitive of transformer models.
