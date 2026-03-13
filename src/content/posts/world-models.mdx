@@ -1,0 +1,86 @@
+---
+title: "World Models"
+description: "How AI systems learn to simulate reality internally — from dreaming agents to LeCun's bet against LLMs."
+date: 2026-03-13
+tags:
+  - world-models
+  - reinforcement-learning
+  - jepa
+  - dreamer
+type: "interactive"
+---
+
+import InteractiveDemo from "../../components/InteractiveDemo.jsx";
+
+A world model is an AI agent's internal simulator of reality. Instead of reacting to observations one at a time, an agent with a world model can *imagine* future states, plan ahead, and even train entirely inside its own mind.
+
+The idea is older than deep learning — but the past few years have turned it into one of the most contested frontiers in AI research.
+
+## The Core Idea
+
+When you reach for a coffee cup, your brain doesn't compute from scratch. It predicts: *the cup is still there, my hand will close around it, it will feel warm*. That predictive loop is a world model — an internal compression of how the world works.
+
+AI systems historically lacked this. A model trained on images learns correlations but has no notion of *what happens next* unless explicitly trained for it. World models change that by adding a forward-looking internal loop.
+
+<InteractiveDemo
+  concept="World Model Loop"
+  subtitle="Observe → encode → predict next state → act → repeat."
+  items={["observe", "encode", "predict", "act", "reward"]}
+  centerLabel="model"
+  interval={1100}
+  client:load
+/>
+
+## How They Work
+
+The canonical architecture has three parts:
+
+- **Encoder** — compresses raw observations (pixels, sensor data) into a compact latent representation
+- **Dynamics model** — predicts how that latent state evolves over time and in response to actions
+- **Decoder / reward head** — reconstructs observations or predicts rewards from the latent
+
+The agent can then *unroll* the dynamics model forward without ever touching the real environment — running thousands of simulated trajectories internally before acting.
+
+```python
+# Simplified DreamerV3-style latent imagination
+z = encoder(observation)          # compress to latent
+for _ in range(horizon):
+    z = dynamics_model(z, action)  # imagine next state
+    reward = reward_head(z)        # predict reward
+    action = policy(z)             # plan in latent space
+```
+
+## Dreamer: Training in Dreams
+
+The **Dreamer** line of work (Ha & Schmidhuber 2018 → DreamerV3, 2025) is the most influential practical implementation. Its key insight: train the policy *entirely inside the world model*, then deploy to the real environment.
+
+DreamerV3 uses a **Recurrent State-Space Model (RSSM)** that maintains both a deterministic hidden state and a stochastic latent variable — capturing both the predictable and uncertain parts of the world.
+
+The result: a single algorithm that masters Atari, continuous control, 3D navigation, and Minecraft diamond collection — without task-specific tuning.
+
+## LeCun's Bet: JEPA
+
+Yann LeCun has been arguing for years that **current LLMs are not world models** — they predict tokens, not the structure of reality. His alternative is **JEPA (Joint Embedding Predictive Architecture)**: instead of predicting raw pixels or tokens, predict in *abstract embedding space*.
+
+The key difference:
+
+| Approach | Predicts | Problem |
+|---|---|---|
+| Generative (LLMs, Sora) | Raw outputs (tokens, pixels) | Wastes capacity on irrelevant details |
+| JEPA | Abstract representations | Learns structure, not surface |
+
+In early 2026, LeCun left Meta to found **AMI** with $1B in funding — a direct bet that the path to general intelligence runs through world models, not scaled language models.
+
+## Sora as a World Simulator?
+
+OpenAI framed **Sora** (2024) as evidence that video generation models develop an implicit understanding of physical reality. Generating coherent video requires learning *something* about how objects move, collide, and interact.
+
+But critics — including LeCun — argue this is surface-level simulation. A 2024 paper tested V-JEPA and Sora on physical consistency benchmarks and found both fail at multi-object interactions in ways a child wouldn't.
+
+The debate remains open: is physical plausibility in generated video the same as *understanding* the world?
+
+## Why It Matters
+
+World models are the bridge between perception and planning. An agent that can simulate consequences before acting is more sample-efficient, safer to train, and potentially capable of the kind of flexible reasoning that current systems lack.
+
+Whether the path runs through latent imagination (Dreamer), abstract prediction (JEPA), or emergent simulation in massive generative models (Sora) — every serious AI lab is now building toward the same goal: a system that doesn't just react to the world, but *models* it.
