@@ -1,0 +1,166 @@
+import { useState } from "react";
+
+const soliloquies = [
+  {
+    act: "Perde I, Sahne II",
+    opening: "O, that this too, too solid flesh would melt…",
+    turkish: "Ah, şu et yığını eriyip yok olsa...",
+    topic: "Yas & İntihar Düşüncesi",
+    summary:
+      "Hamlet babasının ölümü ve annesinin Claudius ile evliliği karşısında duyduğu tiksinti ve çaresizliği dile getirir. Yaşamak istemez ama intiharı günah saydığı için eyleme geçemez.",
+    psychology:
+      "Derin bir melankolinin ilk işareti. Freudyen okumada anneye duyulan bastırılmış öfkenin kendine yönelmesi.",
+    color: "#6366f1",
+  },
+  {
+    act: "Perde I, Sahne V",
+    opening: "O all you host of heaven! O earth! what else?…",
+    turkish: "Ey gökyüzünün tüm ordusu! Ey yer!...",
+    topic: "Hayaletle Karşılaşma",
+    summary:
+      "Babasının hayaletiyle karşılaşıp gerçeği öğrendikten sonra Hamlet, intikam yemini eder. Her şeyi silip yalnızca bu emri aklında tutmaya karar verir.",
+    psychology:
+      "Travmatik bir açıklamanın ardından gelen dissosiyatif tepki. Kimliğin yeniden kurulma anı.",
+    color: "#8b5cf6",
+  },
+  {
+    act: "Perde II, Sahne II",
+    opening: "O, what a rogue and peasant slave am I!…",
+    turkish: "Ne alçak, ne köylü bir kul benim!...",
+    topic: "Kendini Yargılama",
+    summary:
+      "Bir oyuncu sahte duygularla ağlarken Hamlet gerçek bir acıyla hareketsiz kalmanın utancını duyar. Kendini kınar, planlar yapar: 'Oyun içinde oyun' fikrini ortaya atar.",
+    psychology:
+      "Eylemsizliğe karşı kendine yönelen öfke. Hamlet'in kronik prokrastinasyonunun psikolojik kökleri burada.",
+    color: "#a855f7",
+  },
+  {
+    act: "Perde III, Sahne I",
+    opening: "To be, or not to be, that is the question…",
+    turkish: "Olmak ya da olmamak, işte bütün mesele...",
+    topic: "Varoluşsal Sorgulama",
+    summary:
+      "İngiliz edebiyatının en ünlü satırları. Yaşamanın mı yoksa ölmenin mi daha onurlu olduğunu sorgular. Ölüm korkusu — öte dünyanın bilinmezliği — onu eylemden alıkoyar.",
+    psychology:
+      "Varoluşçu felsefenin öncüsü. Belirsizlik karşısında felç olan zihin: karar verememe halinin anatomisi.",
+    color: "#ec4899",
+  },
+  {
+    act: "Perde III, Sahne II",
+    opening: "'Tis now the very witching time of night…",
+    turkish: "Şimdi tam büyünün vakti, gece...",
+    topic: "Karanlık Kararlılık",
+    summary:
+      "Oyunun Claudius'u nasıl etkilediğini gördükten sonra Hamlet kendini en karanlık duygularına bırakır. Annesine giderken sert ama zarar vermemeye söz verir.",
+    psychology:
+      "Kısa süreli bir 'aktif mod' — bastırılmış enerjinin dışa vurumu. Ama yine de eylem gerçekleşmez.",
+    color: "#f43f5e",
+  },
+  {
+    act: "Perde III, Sahne III",
+    opening: "Now might I do it pat, now he is praying…",
+    turkish: "Şimdi tam yapabilirim, dua ederken...",
+    topic: "İntikamı Erteleme",
+    summary:
+      "Claudius'u öldürmek için mükemmel fırsat elindeyken Hamlet onu öldürmez — dua ederken öldürülürse cennete gidebileceği kaygısıyla. Bu en büyük rasyonalizasyon anıdır.",
+    psychology:
+      "Klasik bir savunma mekanizması: entelektüel gerekçe üretme (intellectualization). Gerçek neden daha derin bir kararsızlıktır.",
+    color: "#ef4444",
+  },
+  {
+    act: "Perde IV, Sahne IV",
+    opening: "How all occasions do inform against me…",
+    turkish: "Her şey benim aleyhime işliyor...",
+    topic: "Son Uyanış",
+    summary:
+      "Fortinbras'ın ordusuyla karşılaşıp onun kör cesaretini görünce Hamlet kendini son kez yargılar. 'Büyük düşünceler büyük eylemler gerektirmez' diyerek artık harekete geçmeye karar verir.",
+    psychology:
+      "Oyunun psikolojik dönüm noktası. Hamlet ilk kez eylemi düşünceden üstün tutar — fakat artık çok geç midir?",
+    color: "#f97316",
+  },
+];
+
+export default function SoliloquyExplorer() {
+  const [selected, setSelected] = useState(0);
+  const s = soliloquies[selected];
+
+  return (
+    <div className="my-8 rounded-2xl border border-neutral-200 dark:border-neutral-700 overflow-hidden font-sans">
+      {/* Header */}
+      <div
+        className="px-6 py-4 text-white"
+        style={{ backgroundColor: s.color, transition: "background-color 0.4s ease" }}
+      >
+        <div className="text-xs font-semibold uppercase tracking-widest opacity-80 mb-1">
+          {s.act}
+        </div>
+        <div className="text-lg font-bold leading-snug">"{s.opening}"</div>
+      </div>
+
+      {/* Soliloquy selector */}
+      <div className="flex overflow-x-auto bg-neutral-50 dark:bg-neutral-900 border-b border-neutral-200 dark:border-neutral-700">
+        {soliloquies.map((sol, i) => (
+          <button
+            key={i}
+            onClick={() => setSelected(i)}
+            className={`flex-shrink-0 px-3 py-2 text-xs font-medium border-b-2 transition-colors ${
+              selected === i
+                ? "border-current text-white"
+                : "border-transparent text-neutral-500 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200"
+            }`}
+            style={selected === i ? { borderColor: sol.color, color: sol.color } : {}}
+          >
+            {i + 1}. Soliloquy
+          </button>
+        ))}
+      </div>
+
+      {/* Content */}
+      <div className="p-6 grid md:grid-cols-2 gap-6 bg-white dark:bg-neutral-900">
+        <div>
+          <div
+            className="inline-block text-xs font-bold uppercase tracking-wide px-2 py-1 rounded mb-3 text-white"
+            style={{ backgroundColor: s.color }}
+          >
+            {s.topic}
+          </div>
+          <p className="text-sm text-neutral-500 dark:text-neutral-400 italic mb-3">
+            "{s.turkish}"
+          </p>
+          <p className="text-sm text-neutral-700 dark:text-neutral-300 leading-relaxed">
+            {s.summary}
+          </p>
+        </div>
+        <div className="bg-neutral-50 dark:bg-neutral-800 rounded-xl p-4">
+          <div className="text-xs font-bold uppercase tracking-wide text-neutral-400 mb-2">
+            🧠 Psikolojik Yorum
+          </div>
+          <p className="text-sm text-neutral-700 dark:text-neutral-300 leading-relaxed">
+            {s.psychology}
+          </p>
+        </div>
+      </div>
+
+      {/* Navigation */}
+      <div className="flex justify-between items-center px-6 py-3 bg-neutral-50 dark:bg-neutral-900 border-t border-neutral-200 dark:border-neutral-700">
+        <button
+          onClick={() => setSelected((prev) => Math.max(0, prev - 1))}
+          disabled={selected === 0}
+          className="text-xs text-neutral-500 hover:text-neutral-800 dark:hover:text-neutral-200 disabled:opacity-30 transition-colors"
+        >
+          ← Önceki
+        </button>
+        <span className="text-xs text-neutral-400">
+          {selected + 1} / {soliloquies.length}
+        </span>
+        <button
+          onClick={() => setSelected((prev) => Math.min(soliloquies.length - 1, prev + 1))}
+          disabled={selected === soliloquies.length - 1}
+          className="text-xs text-neutral-500 hover:text-neutral-800 dark:hover:text-neutral-200 disabled:opacity-30 transition-colors"
+        >
+          Sonraki →
+        </button>
+      </div>
+    </div>
+  );
+}
