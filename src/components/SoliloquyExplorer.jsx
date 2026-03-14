@@ -73,7 +73,7 @@ const soliloquies = [
     turkish: "Her şey benim aleyhime işliyor...",
     topic: "Son Uyanış",
     summary:
-      "Fortinbras'ın ordusuyla karşılaşıp onun kör cesaretini görünce Hamlet kendini son kez yargılar. 'Büyük düşünceler büyük eylemler gerektirmez' diyerek artık harekete geçmeye karar verir.",
+      "Fortinbras'ın ordusuyla karşılaşıp onun kör cesaretini görünce Hamlet kendini son kez yargılar. Büyük düşünceler büyük eylemler gerektirmez diyerek artık harekete geçmeye karar verir.",
     psychology:
       "Oyunun psikolojik dönüm noktası. Hamlet ilk kez eylemi düşünceden üstün tutar — fakat artık çok geç midir?",
     color: "#f97316",
@@ -85,78 +85,135 @@ export default function SoliloquyExplorer() {
   const s = soliloquies[selected];
 
   return (
-    <div className="my-8 rounded-2xl border border-neutral-200 dark:border-neutral-700 overflow-hidden font-sans">
-      {/* Header */}
-      <div
-        className="px-6 py-4 text-white"
-        style={{ backgroundColor: s.color, transition: "background-color 0.4s ease" }}
-      >
-        <div className="text-xs font-semibold uppercase tracking-widest opacity-80 mb-1">
+    <div style={{
+      margin: "2rem 0",
+      borderRadius: "16px",
+      border: "1px solid #e5e7eb",
+      overflow: "hidden",
+      fontFamily: "system-ui, sans-serif",
+      boxShadow: "0 2px 12px rgba(0,0,0,0.07)",
+    }}>
+      {/* Coloured header */}
+      <div style={{
+        padding: "20px 24px",
+        backgroundColor: s.color,
+        transition: "background-color 0.35s ease",
+        color: "#fff",
+      }}>
+        <div style={{ fontSize: "11px", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", opacity: 0.8, marginBottom: "6px" }}>
           {s.act}
         </div>
-        <div className="text-lg font-bold leading-snug">"{s.opening}"</div>
+        <div style={{ fontSize: "15px", fontWeight: 700, lineHeight: 1.4 }}>
+          "{s.opening}"
+        </div>
       </div>
 
-      {/* Soliloquy selector */}
-      <div className="flex overflow-x-auto bg-neutral-50 dark:bg-neutral-900 border-b border-neutral-200 dark:border-neutral-700">
+      {/* Tab bar */}
+      <div style={{ display: "flex", overflowX: "auto", backgroundColor: "#f9fafb", borderBottom: "1px solid #e5e7eb" }}>
         {soliloquies.map((sol, i) => (
           <button
             key={i}
             onClick={() => setSelected(i)}
-            className={`flex-shrink-0 px-3 py-2 text-xs font-medium border-b-2 transition-colors ${
-              selected === i
-                ? "border-current text-white"
-                : "border-transparent text-neutral-500 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200"
-            }`}
-            style={selected === i ? { borderColor: sol.color, color: sol.color } : {}}
+            style={{
+              flexShrink: 0,
+              padding: "10px 14px",
+              fontSize: "11px",
+              fontWeight: 600,
+              background: "none",
+              border: "none",
+              borderBottom: selected === i ? `3px solid ${sol.color}` : "3px solid transparent",
+              color: selected === i ? sol.color : "#9ca3af",
+              cursor: "pointer",
+              transition: "color 0.2s, border-color 0.2s",
+            }}
           >
             {i + 1}. Soliloquy
           </button>
         ))}
       </div>
 
-      {/* Content */}
-      <div className="p-6 grid md:grid-cols-2 gap-6 bg-white dark:bg-neutral-900">
+      {/* Content grid */}
+      <div style={{
+        padding: "24px",
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+        gap: "20px",
+        backgroundColor: "#fff",
+      }}>
         <div>
-          <div
-            className="inline-block text-xs font-bold uppercase tracking-wide px-2 py-1 rounded mb-3 text-white"
-            style={{ backgroundColor: s.color }}
-          >
+          <div style={{
+            display: "inline-block",
+            fontSize: "11px",
+            fontWeight: 700,
+            textTransform: "uppercase",
+            letterSpacing: "0.08em",
+            padding: "3px 10px",
+            borderRadius: "6px",
+            marginBottom: "12px",
+            color: "#fff",
+            backgroundColor: s.color,
+          }}>
             {s.topic}
           </div>
-          <p className="text-sm text-neutral-500 dark:text-neutral-400 italic mb-3">
+          <p style={{ fontSize: "13px", color: "#6b7280", fontStyle: "italic", marginBottom: "10px", lineHeight: 1.6 }}>
             "{s.turkish}"
           </p>
-          <p className="text-sm text-neutral-700 dark:text-neutral-300 leading-relaxed">
+          <p style={{ fontSize: "14px", color: "#374151", lineHeight: 1.7, margin: 0 }}>
             {s.summary}
           </p>
         </div>
-        <div className="bg-neutral-50 dark:bg-neutral-800 rounded-xl p-4">
-          <div className="text-xs font-bold uppercase tracking-wide text-neutral-400 mb-2">
+
+        <div style={{
+          backgroundColor: "#f3f4f6",
+          borderRadius: "12px",
+          padding: "16px",
+        }}>
+          <div style={{ fontSize: "11px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: "#9ca3af", marginBottom: "10px" }}>
             🧠 Psikolojik Yorum
           </div>
-          <p className="text-sm text-neutral-700 dark:text-neutral-300 leading-relaxed">
+          <p style={{ fontSize: "14px", color: "#374151", lineHeight: 1.7, margin: 0 }}>
             {s.psychology}
           </p>
         </div>
       </div>
 
       {/* Navigation */}
-      <div className="flex justify-between items-center px-6 py-3 bg-neutral-50 dark:bg-neutral-900 border-t border-neutral-200 dark:border-neutral-700">
+      <div style={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        padding: "12px 24px",
+        backgroundColor: "#f9fafb",
+        borderTop: "1px solid #e5e7eb",
+      }}>
         <button
           onClick={() => setSelected((prev) => Math.max(0, prev - 1))}
           disabled={selected === 0}
-          className="text-xs text-neutral-500 hover:text-neutral-800 dark:hover:text-neutral-200 disabled:opacity-30 transition-colors"
+          style={{
+            fontSize: "12px",
+            color: selected === 0 ? "#d1d5db" : "#6b7280",
+            background: "none",
+            border: "none",
+            cursor: selected === 0 ? "default" : "pointer",
+            padding: "4px 0",
+          }}
         >
           ← Önceki
         </button>
-        <span className="text-xs text-neutral-400">
+        <span style={{ fontSize: "12px", color: "#9ca3af" }}>
           {selected + 1} / {soliloquies.length}
         </span>
         <button
           onClick={() => setSelected((prev) => Math.min(soliloquies.length - 1, prev + 1))}
           disabled={selected === soliloquies.length - 1}
-          className="text-xs text-neutral-500 hover:text-neutral-800 dark:hover:text-neutral-200 disabled:opacity-30 transition-colors"
+          style={{
+            fontSize: "12px",
+            color: selected === soliloquies.length - 1 ? "#d1d5db" : "#6b7280",
+            background: "none",
+            border: "none",
+            cursor: selected === soliloquies.length - 1 ? "default" : "pointer",
+            padding: "4px 0",
+          }}
         >
           Sonraki →
         </button>
